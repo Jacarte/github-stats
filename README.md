@@ -5,7 +5,7 @@
 <a href="https://github.com/jasongaylord/github-stats">
    
 ![](https://github.com/jacarte/github-stats/blob/master/generated/overview.svg)
-![](https://github.com/jacarte/github-stats/blob/master/generated/languages.svg)
+![](https://github.com/jacarte/github-stats/blob/master/generated/languages_count.svg)
 
 </a>
 
