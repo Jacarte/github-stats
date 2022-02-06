@@ -48,6 +48,9 @@ async def generate_overview(s: Stats) -> None:
         f.write(output)
 
 
+def generate_project_badges(s: Stats) -> None:
+    print(s._repos)
+
 async def generate_languages(s: Stats) -> None:
     """
     Generate an SVG badge with summary languages used
@@ -58,6 +61,7 @@ async def generate_languages(s: Stats) -> None:
 
     progress = ""
     lang_list = ""
+
     sorted_languages = sorted((await s.languages).items(), reverse=True,
                               key=lambda t: t[1].get("size"))
     delay_between = 150
@@ -86,6 +90,51 @@ fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8z"></path></svg>
         f.write(output)
 
 
+
+
+def generate_project_badges(s: Stats) -> None:
+    print(s._repos)
+
+async def generate_languages_by_count(s: Stats) -> None:
+    """
+    Generate an SVG badge with summary languages used
+    :param s: Represents user's GitHub statistics
+    """
+    with open("templates/languages_count.svg", "r") as f:
+        output = f.read()
+
+    progress = ""
+    lang_list = ""
+
+    sorted_languages = sorted((await s.languages).items(), reverse=True,
+                              key=lambda t: t[1].get("occurrences"))
+    delay_between = 150
+    for i, (lang, data) in enumerate(sorted_languages):
+        print(data)
+        color = data.get("color")
+        color = color if color is not None else "#000000"
+        progress += (f'<span style="background-color: {color};'
+                     f'width: {data.get("count", 0):0.3f}%;" '
+                     f'class="progress-item"></span>')
+        lang_list += f"""
+<li style="animation-delay: {i * delay_between}ms;">
+<svg xmlns="http://www.w3.org/2000/svg" class="octicon" style="fill:{color};"
+viewBox="0 0 16 16" version="1.1" width="16" height="16"><path
+fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+<span class="lang">{lang}</span>
+<span class="percent">{data.get("count", 0):0.2f}%</span>
+</li>
+
+"""
+
+    output = re.sub(r"{{ progress }}", progress, output)
+    output = re.sub(r"{{ lang_list }}", lang_list, output)
+
+    generate_output_folder()
+    with open("generated/languages_count.svg", "w") as f:
+        f.write(output)
+
+
 ################################################################################
 # Main Function
 ################################################################################
@@ -97,10 +146,13 @@ async def main() -> None:
     access_token = os.getenv("ACCESS_TOKEN")
     user = os.getenv("GITHUB_ACTOR")
     excluded = os.getenv("EXCLUDED")
+    excluded_lang = os.getenv("EXCLUDE_LANG")
     excluded = {x.strip() for x in excluded.split(",")} if excluded else None
+    excluded_lang = {x.strip() for x in excluded_lang.split(",")} if excluded_lang else None
+    
     async with aiohttp.ClientSession() as session:
-        s = Stats(user, access_token, session, exclude_repos=excluded)
-        await asyncio.gather(generate_languages(s), generate_overview(s))
+        s = Stats(user, access_token, session, exclude_repos=excluded, exclude_languages=excluded_lang)
+        await asyncio.gather( generate_languages_by_count(s), generate_overview(s))
 
 
 if __name__ == "__main__":

@@ -100,17 +100,17 @@ div.ellipsis {
 <foreignObject>
 <div xmlns="http://www.w3.org/1999/xhtml" class="ellipsis">
 
-<h2>Languages Used (By File Size)</h2>
+<h2>Languages Used (By File Count)</h2>
 
 <div>
 <span class="progress">
-
+{{ progress }}
 </span>
 </div>
 
 <ul>
 
-
+{{ lang_list }}
 
 </ul>
 
