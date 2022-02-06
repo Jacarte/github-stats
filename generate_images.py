@@ -146,7 +146,7 @@ async def main() -> None:
     access_token = os.getenv("ACCESS_TOKEN")
     user = os.getenv("GITHUB_ACTOR")
     excluded = os.getenv("EXCLUDED")
-    excluded_lang = os.getenv("EXCLUDE_LANG")
+    excluded_lang = os.getenv("EXCLUDED_LANG")
     excluded = {x.strip() for x in excluded.split(",")} if excluded else None
     excluded_lang = {x.strip() for x in excluded_lang.split(",")} if excluded_lang else None
     

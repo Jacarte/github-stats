@@ -52,6 +52,7 @@ jobs:
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         EXCLUDED: ${{ secrets.EXCLUDED }}
+        EXCLUDED_LANG: ${{ secrets.EXCLUDED_LANG }}
 
     # Commits all changed files to the repository
     - name: Commit to the repo
